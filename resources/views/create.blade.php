@@ -51,6 +51,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
+
                             @php($prepend = '|')
                             <label>@lang('galleries::gallery.parent')</label>
                             <select name="parent_id" id="parent_id" class=" form-control select_2 " required>
@@ -60,6 +61,7 @@
                                     @include('galleries::partials.options', ['gal'=>$gal,"prepend"=>$prepend])
                                 @endforeach
                             </select>
+
                         </div>
                         <div class="form-group">
 
