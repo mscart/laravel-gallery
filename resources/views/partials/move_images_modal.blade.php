@@ -29,7 +29,7 @@
                 <button type="button" class="btn btn-secondary cancel_delete" data-dismiss="modal">
                     @lang('admin/general.actions.cancel')
                 </button>
-                <input type="text" name="images_id" id="images_id" />
+                <input type="hidden" name="images_id" id="images_id" />
                 {{ csrf_field() }}
 
                     <button type="submit" class="btn btn-primary modalMoveButton">
