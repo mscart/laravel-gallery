@@ -32,6 +32,7 @@
                 <input type="hidden" name="images_id" id="images_id" />
                 {{ csrf_field() }}
 
+
                     <button type="submit" class="btn btn-primary modalMoveButton">
                         @lang('admin/general.actions.move')
                     </button>
