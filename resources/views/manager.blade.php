@@ -37,7 +37,7 @@
                                                         </a>
                                                     </div>
                                                 @else
-                                                    <img class="card-img img-fluid " src="{{asset( '/storage/galeries/'.$gData->id.'/'.$image->image)}}" alt="">
+                                                    <img class="card-img img-fluid " src="{{asset( '/storage/galeries/'.$gData->id.'/thumbs/'.$image->image)}}" alt="">
                                                     <div class="card-img-actions-overlay card-img">
                                                         <a href="{{asset( '/storage/galeries/'.$gData->id.'/'.$image->image)}}" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round" data-popup="lightbox" rel="group">
                                                             <i class="icon-eye"></i>

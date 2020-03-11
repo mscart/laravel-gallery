@@ -49,7 +49,7 @@ MIT. Please see the [license file](license.md) for more information.
 [ico-travis]: https://img.shields.io/travis/mscart/galleries/master.svg?style=flat-square
 [ico-styleci]: https://styleci.io/repos/12345678/shield
 
-[link-packagist]: https://packagist.org/packages/mscart/galleries
+    [link-packagist]: https://packagist.org/packages/mscart/galleries
 [link-downloads]: https://packagist.org/packages/mscart/galleries
 [link-travis]: https://travis-ci.org/mscart/galleries
 [link-styleci]: https://styleci.io/repos/12345678

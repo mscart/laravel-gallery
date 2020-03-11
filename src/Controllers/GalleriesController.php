@@ -3,11 +3,9 @@
 namespace MsCart\Galleries;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\File;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
-use MsCart\Galleries\Gallery;
-use Illuminate\Http\UploadedFile;
+use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
 use Datatables;
 
@@ -301,6 +299,7 @@ class GalleriesController extends Controller
 
         // Settings
         $targetDir = Storage::path('public/galeries/'.$id);
+        $thumbsDir = $targetDir.'/thumbs';
 //$targetDir = 'uploads';
         $cleanupTargetDir = false; // Remove old files
         $maxFileAge = 5 * 3600; // Temp file age in seconds
@@ -309,6 +308,9 @@ class GalleriesController extends Controller
 // Create target dir
         if (!file_exists($targetDir)) {
             @mkdir($targetDir);
+        }
+        if (!file_exists($thumbsDir)) {
+            @mkdir($thumbsDir);
         }
 
 // Get a file name
@@ -362,6 +364,12 @@ class GalleriesController extends Controller
             }else if(strstr($mime, "audio/")){
                 $filetype = "audio";
             }
+
+            //making thumbs
+            $img = Image::make($filePath);
+            $img->resize(320, 240);
+            $img->save($thumbsDir.'/'.$fileName);
+
             $size = realFileSize($filePath);
             $gi = new GalleryImage();
             $gi->gallery_id = $id;
@@ -369,6 +377,8 @@ class GalleriesController extends Controller
             $gi->type = $filetype;
             $gi->size = $size;
             $gi->saveOrFail();
+
+
         }
 
     }
@@ -403,12 +413,13 @@ class GalleriesController extends Controller
 
             if (!$deleted)
             {
-
                 $messages[] = trans('galleries::gallery.messages.not_deleted');
                 $ids_error[] = $id;
             }
-            if ($deleted)
-                Storage::delete('public/galeries/'.$image->gallery_id.'/'.$image->image);
+            if ($deleted) {
+                Storage::delete('public/galeries/' . $image->gallery_id . '/' . $image->image);
+                Storage::delete('public/galeries/' . $image->gallery_id . '/thumbs/' . $image->image);
+            }
         }
 
         if ($deleted)

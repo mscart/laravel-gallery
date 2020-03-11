@@ -84,7 +84,7 @@ class GalleriesServiceProvider extends ServiceProvider
 
         // Publishing assets.
         $this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/mscart/galleries'),
+            __DIR__.'/../resources/assets' => public_path('backend/vendor/mscart/galleries/assets'),
         ], 'galleries.views');
 
         // Publishing the translation files.
