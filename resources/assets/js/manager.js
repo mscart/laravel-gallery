@@ -162,6 +162,7 @@ var Plupload = function() {
     return {
         init: function() {
             ajaxCSRFToken();
+            _multiValidate();
             _componentSelect2();
             _componentPlupload();
             _componentFancybox();

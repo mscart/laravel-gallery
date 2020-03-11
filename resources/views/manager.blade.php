@@ -100,6 +100,8 @@
     <script src="{{ asset('backend/js/plugins/uploaders/plupload/plupload.queue.min.js') }}"></script>
     <script src="{{ asset('backend/js/plugins/media/fancybox.min.js') }}"></script>
     <script src="{{ asset('backend/js/plugins/uploaders/plupload/i18n/'.App::getLocale().'.js') }}"></script>
+    <script src="{{ asset('backend/js/plugins/forms/validation/validate.min.js') }}"></script>
+    <script src="{{ asset('backend/js/plugins/forms/validation/localization/messages_'.App::getLocale().'.js') }}" type="text/javascript"></script>
     <script src="{{ asset('backend/vendor/mscart/galleries/assets/js/manager.js') }}"></script>
     <script>
         var upload_url ="{{route('galleries.uploadFile',$gData->id)}}"

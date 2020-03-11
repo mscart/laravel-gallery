@@ -16,6 +16,7 @@ return [
     'users'=>'Utilizatori',
     'all' => 'Toti utilizatorii',
     'to_move'=>'Muta in galeria',
+    'choose'=>'Alege galeria',
     'messages'=>[
         'multiple_deleted' =>'Galeriile selectate au fost sterse !',
         'not_deleted'=>'Una sau mai multe galerii selelctate nu au fost sterse!',

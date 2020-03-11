@@ -16,7 +16,8 @@
                 <div class="form-group">
                     @php($prepend = '|')
                     <label>@lang('galleries::gallery.to_move')</label>
-                    <select name="gallery_id" id="gallery_id" class="select_2 form-control" autocomplete="off">
+                    <select name="gallery_id" id="gallery_id" class="select_2 form-control" autocomplete="off" required>
+                        <option selected value="">@lang('galleries::gallery.choose')</option>
                         @php($galeries = \MsCart\Galleries\Gallery::get()->toTree())
                         @foreach($galeries as $gal)
                             <option @if($gal->id == $gData->id) disabled @endif value="{{$gal->id}}">{{$gal->gallery_name->first()->name}}</option>
