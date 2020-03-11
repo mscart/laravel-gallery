@@ -365,7 +365,7 @@ class GalleriesController extends Controller
                 $filetype = "audio";
             }
 
-            //making thumbs
+            //making thumbs test
             $img = Image::make($filePath);
             $img->resize(320, 240);
             $img->save($thumbsDir.'/'.$fileName);
