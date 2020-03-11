@@ -134,7 +134,7 @@ var Plupload = function() {
             runtimes: 'html5, html4, Flash, Silverlight',
             url: upload_url,
             chunk_size: '900Kb',
-            max_file_size: '100000MB',
+            max_file_size: '10000MB',
             unique_names: true,
             header: true,
             dragdrop: true,
@@ -144,7 +144,7 @@ var Plupload = function() {
             },
             // Specify what files to browse for
             filters : [
-                {title : "Image files", extensions : "jpg,gif,png"},
+                {title : "Image files", extensions : "jpg,gif,png,jpeg"},
                 {title : "Zip files", extensions : "zip,avi,mpg,mp4"}
             ],
             // Flash settings

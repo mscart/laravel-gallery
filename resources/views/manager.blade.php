@@ -49,7 +49,7 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-start flex-nowrap">
                                                     <div>
-                                                        <div class="font-weight-semibold mr-2">An so vulgar</div>
+                                                        <div class="font-weight-semibold mr-2"></div>
                                                         <span class="font-size-sm text-muted">@lang('admin/general.size') {{ formatBytes($image->size) }}</span>
                                                     </div>
                                                     <div class="list-icons list-icons-extended ml-auto">
