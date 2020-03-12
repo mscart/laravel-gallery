@@ -20,6 +20,7 @@ class CreateGalleryImagesTable extends Migration
             $table->string('type');
             $table->string('size');
             $table->foreign('gallery_id')->on('galleries')->references('id')->onDelete('cascade');
+            $table->unique(['gallery_id','image']);
             $table->timestamps();
         });
     }

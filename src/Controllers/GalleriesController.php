@@ -278,23 +278,28 @@ class GalleriesController extends Controller
     public function uploadFile(Request $request,$id)
     {
 
+
+
+
+
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-store, no-cache, must-revalidate");
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
 
-        @set_time_limit(5 * 60);
+        @set_time_limit(0);
 
 
-        // Get a file name
-        if (isset($_REQUEST["name"])) {
-            $fileName = $_REQUEST["name"];
-        } elseif (!empty($_FILES)) {
+
             $fileName = $_FILES["file"]["name"];
-        } else {
-            $fileName = uniqid("file_");
-        }
+
+        $gi = new GalleryImage();
+
+       if ($gi->where('gallery_id',$id)->where('image',$fileName)->get()->count() >0)
+           die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Imaginea mai exista"}, "id" : "id"}');
+
+
 
 
         // Settings
@@ -311,15 +316,6 @@ class GalleriesController extends Controller
         }
         if (!file_exists($thumbsDir)) {
             @mkdir($thumbsDir);
-        }
-
-// Get a file name
-        if (isset($_REQUEST["name"])) {
-            $fileName = $_REQUEST["name"];
-        } elseif (!empty($_FILES)) {
-            $fileName = $_FILES["file"]["name"];
-        } else {
-            $fileName = uniqid("file_");
         }
 
         $filePath = $targetDir . '/' . $fileName;
@@ -373,7 +369,7 @@ class GalleriesController extends Controller
             }
 
             $size = realFileSize($filePath);
-            $gi = new GalleryImage();
+
             $gi->gallery_id = $id;
             $gi->image = $fileName;
             $gi->type = $filetype;
