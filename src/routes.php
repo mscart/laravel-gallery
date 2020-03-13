@@ -6,6 +6,8 @@ Route::group(['prefix'  =>  config('app.admin_prefix')], function () {
     Route::group(['middleware' => ['web','auth:admin']], function () {
 
         Route::get('/galleries', '\MsCart\Galleries\GalleriesController@index')->name('categories.index');
+        Route::get('/galleries/settings', '\MsCart\Galleries\GalleriesController@showSettings')->name('galleries.showSettings');
+        Route::post('/galleries/settings', '\MsCart\Galleries\GalleriesController@saveSettings')->name('galleries.saveSettings');
         Route::get('/galleries/{gallery_id}/manage', '\MsCart\Galleries\GalleriesController@manage')->name('galleries.manage');
         Route::post('/galleries/getGalleries', '\MsCart\Galleries\GalleriesController@getGalleries')->name('galleries.getGalleries');
         Route::resource('/galleries', '\MsCart\Galleries\GalleriesController');

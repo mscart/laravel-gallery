@@ -133,9 +133,9 @@ var Plupload = function() {
         $('.file-uploader').pluploadQueue({
             runtimes: 'html5, html4, Flash, Silverlight',
             url: upload_url,
-            chunk_size: '900Kb',
-            max_file_size: '10000MB',
-            unique_names: true,
+            chunk_size: settings_chuck_size,
+            max_file_size: settings_max_file_size,
+            unique_names: false,
             header: true,
             dragdrop: true,
             // add X-CSRF-TOKEN in headers attribute to fix this issue
@@ -144,19 +144,96 @@ var Plupload = function() {
             },
             // Specify what files to browse for
             filters : [
-                {title : "Image files", extensions : "jpg,gif,png,jpeg"},
-                {title : "Zip files", extensions : "zip,avi,mpg,mp4"}
+                {title : "Image files", extensions : settings_allowed_extensions},
+                // {title : "Zip files", extensions : "zip,avi,mpg,mp4"}
             ],
             // Flash settings
-            flash_swf_url : '/backend/js/plugins/uploaders/plupload/files/jMoxie.swf',
+            flash_swf_url : '/backend/js/plugins/uploaders/plupload/files/Moxie.swf',
             // Silverlight settings
             silverlight_xap_url : '/backend/js/plugins/uploaders/plupload/files/Moxie.xap',
             init: {
+                BeforeUpload: function(up, file) {
+                    //log('[BeforeUpload]', 'File: ', file);
+                },
                 UploadComplete: function(up, file, info) {
                     location.reload();
                 },
+                ChunkUploaded: function (up, file, info)
+                {
+                    var response = jQuery.parseJSON(info.response);
+                    console.log(response);
+                    if (response !== null) {
+                        if (response.error) {
+                            up.stop();
+                            file.status = plupload.FAILED;
+                            up.trigger('QueueChanged');            //Line A
+                            up.trigger('UploadProgress', file);     // Line B
+                            up.start();
+
+                            // Styled right
+                            new PNotify({
+                                // title: 'Right icon',
+                                text: response.error.message,
+                                addclass: 'bg-danger border-danger',
+                                type: 'erro'
+                            });
+                        }
+                    }
+                },
+
             }
         });
+
+
+        // Write log
+        function log() {
+            var str = '';
+
+            plupload.each(arguments, function(arg) {
+                var row = '';
+
+                if (typeof(arg) != 'string') {
+                    plupload.each(arg, function(value, key) {
+
+                        // Convert items in File objects to human readable form
+                        if (arg instanceof plupload.File) {
+
+                            // Convert status to human readable
+                            switch (value) {
+                                case plupload.QUEUED:
+                                    value = 'QUEUED';
+                                    break;
+
+                                case plupload.UPLOADING:
+                                    value = 'UPLOADING';
+                                    break;
+
+                                case plupload.FAILED:
+                                    value = 'FAILED';
+                                    break;
+
+                                case plupload.DONE:
+                                    value = 'DONE';
+                                    break;
+                            }
+                        }
+
+                        if (typeof(value) != 'function') {
+                            row += (row ? ', ': '') + key + '=' + value;
+                        }
+                    });
+
+                    str += row + ' ';
+                }
+                else {
+                    str += arg + ' ';
+                }
+            });
+
+            var log = $('#log');
+            log.append(str + '<br>');
+            log.scrollTop(log[0].scrollHeight);
+        }
     }
 
     return {
@@ -180,4 +257,8 @@ var Plupload = function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     Plupload.init();
+    $('.video').on('click',function () {
+
+        this.paused?this.play():this.pause();
+    });
 });

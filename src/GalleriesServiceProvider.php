@@ -29,6 +29,7 @@ class GalleriesServiceProvider extends ServiceProvider
         $acl = $menu->add(__('galleries::gallery.name'),    ['segment2'=>'galleries', 'icon'=> 'icon-images3'])->nickname('gallery')->data('order', 1);
         $menu->gallery->add(__('galleries::gallery.add_gallery'),config('app.admin_prefix').'/galleries/create');
         $menu->gallery->add(__('galleries::gallery.list'),config('app.admin_prefix').'/galleries');
+        $menu->gallery->add(__('galleries::gallery.settings'),config('app.admin_prefix').'/galleries/settings');
 
 
         Blade::if('haveChildren', function($id){

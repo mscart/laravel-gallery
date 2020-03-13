@@ -2,6 +2,7 @@
 
 namespace MsCart\Galleries;
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -267,9 +268,21 @@ class GalleriesController extends Controller
         }
     }
 
-    public function manage($id)
+    public function manage(Request $request, $id)
     {
-        $gallery_images = GalleryImage::where('gallery_id',$id)->paginate(20);
+
+
+        $gallery_images = GalleryImage::where('gallery_id',$id);
+
+        $direction = (isset ($request->direction))?$request->direction:'desc';
+        if($request->has('orderBy') && !empty($request->orderBy))
+            $gallery_images->orderBy($request->orderBy,$direction);
+        if($request->has('itemType') && !empty($request->itemType))
+            $gallery_images->where('type',$request->itemType);
+
+
+        $gallery_images = $gallery_images->paginate(30);
+
         $gData = Gallery::find($id);
 
         return view('galleries::manager', compact(['gallery_images','gData']));
@@ -277,6 +290,15 @@ class GalleriesController extends Controller
 
     public function uploadFile(Request $request,$id)
     {
+
+
+
+        // // Form validation
+        $rules = [
+
+            'file' => 'image|mimes:jpeg,jpg,png,gif,mp4|max:100000000', // max 10000kb
+        ];
+
 
 
 
@@ -292,12 +314,21 @@ class GalleriesController extends Controller
 
 
 
-            $fileName = $_FILES["file"]["name"];
+
+// Get a file name
+        if (isset($_REQUEST["name"])) {
+            $fileName = $id.'_'.$_REQUEST["name"];
+        } elseif (!empty($_FILES)) {
+            $fileName = $id.'_'.$_FILES["file"]["name"];
+        } else {
+            $fileName = uniqid($id."_");
+        }
+        //$fileName =  $id.'_'.$fileName;
 
         $gi = new GalleryImage();
 
        if ($gi->where('gallery_id',$id)->where('image',$fileName)->get()->count() >0)
-           die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Imaginea mai exista"}, "id" : "id"}');
+           die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Fisierul '.$fileName.' mai exista"}, "id" : "id"}');
 
 
 
@@ -318,7 +349,7 @@ class GalleriesController extends Controller
             @mkdir($thumbsDir);
         }
 
-        $filePath = $targetDir . '/' . $fileName;
+        $filePath = $targetDir . '/' .$fileName;
 
 // Chunking might be enabled
         $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
@@ -448,11 +479,38 @@ class GalleriesController extends Controller
                 $image->gallery_id = $gallery_id;
                 $image->saveOrFail();
                 Storage::move('public/galeries/'.$old_gallery_id.'/'.$image->image, 'public/galeries/'.$gallery_id.'/'.$image->image);
+                Storage::move('public/galeries/'.$old_gallery_id.'/thumbs/'.$image->image, 'public/galeries/'.$gallery_id.'/thumbs/'.$image->image);
             }
         }
         $viewData = ['messages' => [['message' => trans('galleries::gallery.messages.moved') , 'type' => 'success'], ], ];
         return redirect()
             ->route('galleries.manage', $old_gallery_id)
+            ->with($viewData);
+    }
+
+    public function showSettings()
+    {
+        $settings = Setting::all()->pluck('value','key');
+        return view('galleries::settings',compact('settings'));
+    }
+
+
+    public function saveSettings(Request $request)
+    {
+
+
+        if($request)
+        {
+            $requests =   $request->except('_token');
+            foreach ($requests as $key=>$value)
+            {
+
+                Setting::set($key,$value);
+            }
+        }
+        $viewData = ['messages' => [['message' => trans('galleries::gallery.messages.settings_saved') , 'type' => 'success'], ], ];
+        return redirect()
+            ->route('galleries.showSettings')
             ->with($viewData);
     }
 }

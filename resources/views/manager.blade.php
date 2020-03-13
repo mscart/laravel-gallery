@@ -22,20 +22,17 @@
                     </div>
                 </div>
                 <form action="{{route("galleries.deleteImage",'0')}}" method="post" enctype="multipart/form-data">
-                    <div class="card-body" id="browse_images"">
+                    <div class="card-body" id="browse_images">
+                    <div id="log"></div>
                         <div class="row">
 
                                 @foreach($gallery_images as $image)
-                                    <div class="col-sm-6 col-lg-3">
+                                    <div class="col-sm-6 col-lg-3 col-md-3">
                                         <div class="card">
                                             <div class="card-img-actions  bg-transparent m-1">
                                                 @if($image->type=='video')
-                                                    <video class="card-img embed-responsive embed-responsive-16by9" src="{{asset( '/storage/galeries/'.$gData->id.'/'.$image->image)}}"></video>
-                                                    <div class="card-img-actions-overlay card-img">
-                                                        <a href="{{asset( '/storage/galeries/'.$gData->id.'/'.$image->image)}}" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round" data-popup="lightbox" rel="group">
-                                                            <i class="icon-play"></i>
-                                                        </a>
-                                                    </div>
+                                                    <video class="card-img embed-responsive embed-responsive-16by9 video" style="cursor: pointer" src="{{asset( '/storage/galeries/'.$gData->id.'/'.$image->image)}}"></video>
+
                                                 @else
                                                     <img class="card-img img-fluid " src="{{asset( '/storage/galeries/'.$gData->id.'/thumbs/'.$image->image)}}" alt="">
                                                     <div class="card-img-actions-overlay card-img">
@@ -49,7 +46,7 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-start flex-nowrap">
                                                     <div>
-                                                        <div class="font-weight-semibold mr-2"></div>
+                                                        <div class="font-weight-semibold mr-2">{{ substr(str_replace($gData->id.'_','',$image->image),0,20)}}</div>
                                                         <span class="font-size-sm text-muted">@lang('admin/general.size') {{ formatBytes($image->size) }}</span>
                                                     </div>
                                                     <div class="list-icons list-icons-extended ml-auto">
@@ -67,12 +64,57 @@
                     </div>
                 </form>
                 <div class="card-footer bg-transparent d-flex justify-content-between border-top-0 pt-0">
-                    {{ $gallery_images->links() }}
+                    {{ $gallery_images->appends($_GET)->links() }}
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
+            <form action="{{route('galleries.manage',$gData->id)}}" method="get" >
+
+                <div class="card ">
+                    <div class="card-header bg-transparent header-elements-inline">
+                        <span class="text-uppercase font-size-sm font-weight-semibold">@lang('galleries::gallery.filter_type')</span>
+                        <div class="header-elements">
+                            <div class="list-icons">
+                                <a class="list-icons-item" data-action="collapse"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <label>Item type</label>
+                            <select name="itemType" class="form-control select_2">
+                                <option  value="">@lang('galleries::gallery.all')</option>
+                                <option @if(request()->get('itemType') == 'video' ) selected @endif  value="video">@lang('galleries::gallery.video')</option>
+                                <option @if(request()->get('itemType') == 'image' ) selected @endif value="image">@lang('galleries::gallery.image')</option>
+                                <option @if(request()->get('itemType') == 'audio' ) selected @endif value="image">@lang('galleries::gallery.audio')</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Order</label>
+                            <select name="orderBy" class="form-control select_2">
+                                <option value="">@lang('galleries::gallery.select')</option>
+                                <option @if(request()->get('orderBy') == 'id' ) selected @endif value="id">@lang('galleries::gallery.id')</option>
+                                <option @if(request()->get('orderBy') == 'image' ) selected @endif  value="image">@lang('galleries::gallery.name')</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Order</label>
+                            <select name="direction" class="form-control select_2">
+                                <option value="">@lang('galleries::gallery.select')</option>
+                                <option @if(request()->get('direction') == 'desc' ) selected @endif value="desc">@lang('galleries::gallery.desc')</option>
+                                <option @if(request()->get('direction') == 'asc' ) selected @endif  value="asc">@lang('galleries::gallery.asc')</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary"><i class="icon-filter3"></i>@lang('galleries::gallery.filter')  </button>
+                    </div>
+                </div>
+            </form>
             <div class="card ">
                 <div class="card-header bg-transparent header-elements-inline">
                     <span class="text-uppercase font-size-sm font-weight-semibold">@lang('galleries::gallery.add_images')</span>
@@ -106,6 +148,10 @@
     <script>
         var upload_url ="{{route('galleries.uploadFile',$gData->id)}}"
         var ajax_url = "{{route('galleries.deleteImage','test')}}";
+        var settings_chuck_size ="{{config('settings.settings_chuck_size')}}";
+        var settings_max_file_size ="{{config('settings.settings_max_file_size')}}";
+        var settings_allowed_extensions ="{{config('settings.settings_allowed_extensions')}}";
     </script>
+
 
 @endsection
